@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/contexts/auth-context';
-import { Package } from 'lucide-react';
+import { Package, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
@@ -16,9 +16,11 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
@@ -60,12 +62,21 @@ export default function LoginPage() {
             </div>
             <div>
               <label className="form-label">Password</label>
-              <input
-                type="password"
-                {...register('password')}
-                className="form-input"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  {...register('password')}
+                  className="form-input pr-10"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {errors.password && (
                 <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
               )}
@@ -84,9 +95,24 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-1">Demo Credentials:</p>
-            <p>Admin: admin@stockpilot.com / Admin@123</p>
-            <p>Manager: manager@stockpilot.com / Manager@123</p>
+            <p className="font-medium mb-2">Demo Credentials:</p>
+            {[
+              { label: 'Admin', email: 'admin@stockpilot.com', password: 'Admin@123' },
+              { label: 'Manager', email: 'manager@stockpilot.com', password: 'Manager@123' },
+              { label: 'Staff', email: 'staff@stockpilot.com', password: 'Staff@123' },
+            ].map(({ label, email, password }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => {
+                  setValue('email', email);
+                  setValue('password', password);
+                }}
+                className="w-full text-left px-3 py-1.5 rounded hover:bg-gray-200 transition-colors mb-1 last:mb-0"
+              >
+                <span className="font-medium">{label}:</span> {email} / {password}
+              </button>
+            ))}
           </div>
         </div>
       </div>
