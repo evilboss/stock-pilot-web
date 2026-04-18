@@ -13,12 +13,17 @@ import {
   Settings,
   LogOut,
   Package2,
+  X,
+  Receipt,
+  ShoppingCart,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard/pos', label: 'POS Terminal', icon: ShoppingCart },
+  { href: '/dashboard/sales', label: 'Sales', icon: Receipt },
   { href: '/dashboard/products', label: 'Products', icon: Package },
   { href: '/dashboard/categories', label: 'Categories', icon: Tag },
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
@@ -29,21 +34,33 @@ const navItems = [
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
 
-  return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-[#1C2434] flex flex-col z-40">
+  const content = (
+    <aside className="h-full w-64 bg-[#1C2434] flex flex-col">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-        <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-          <Package2 className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+            <Package2 className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-white font-bold text-lg leading-none">StockPilot</h1>
+            <p className="text-gray-400 text-xs mt-0.5">Inventory Manager</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-white font-bold text-lg leading-none">StockPilot</h1>
-          <p className="text-gray-400 text-xs mt-0.5">Inventory Manager</p>
-        </div>
+        {onClose && (
+          <button onClick={onClose} className="md:hidden text-gray-400 hover:text-white p-1">
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
@@ -58,6 +75,7 @@ export default function Sidebar() {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  onClick={onClose}
                   className={cn(
                     'flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
                     isActive
@@ -97,5 +115,30 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <div className="hidden md:fixed md:left-0 md:top-0 md:h-full md:flex md:z-40">{content}</div>
+
+      {/* Mobile drawer backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <div
+        className={cn(
+          'fixed left-0 top-0 h-full z-50 md:hidden transition-transform duration-300',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
+        {content}
+      </div>
+    </>
   );
 }
