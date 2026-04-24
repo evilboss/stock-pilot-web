@@ -13,6 +13,7 @@ import {
   Settings,
   ShoppingCart,
   Receipt,
+  Clock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +21,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/pos', label: 'POS', icon: ShoppingCart },
   { href: '/dashboard/sales', label: 'Sales', icon: Receipt },
+  { href: '/dashboard/attendance', label: 'Attendance', icon: Clock },
   { href: '/dashboard/products', label: 'Products', icon: Package },
   { href: '/dashboard/categories', label: 'Categories', icon: Tag },
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
