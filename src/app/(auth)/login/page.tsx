@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
-import { Package, Eye, EyeOff } from 'lucide-react';
+import { Package, Eye, EyeOff, QrCode } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
@@ -94,7 +95,17 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div className="mt-4">
+            <Link
+              href="/attendance/my-qr"
+              className="flex items-center justify-center gap-2 w-full py-2.5 px-4 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            >
+              <QrCode className="w-4 h-4" />
+              Show My Attendance QR
+            </Link>
+          </div>
+
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
             <p className="font-medium mb-2">Demo Credentials:</p>
             {[
               { label: 'Admin', email: 'admin@stockpilot.com', password: 'Admin@123' },
