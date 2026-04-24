@@ -17,6 +17,8 @@ import {
   Receipt,
   ShoppingCart,
   Clock,
+  ScanLine,
+  QrCode,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
@@ -34,6 +36,12 @@ const navItems = [
   { href: '/dashboard/transactions', label: 'Transactions', icon: ArrowLeftRight },
   { href: '/dashboard/users', label: 'Users', icon: Users },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+];
+
+// External (full-screen) tools — open in new tab
+const kioskItems = [
+  { href: '/attendance/kiosk', label: 'Kiosk Mode', icon: ScanLine },
+  { href: '/attendance/my-qr', label: 'My QR Code', icon: QrCode },
 ];
 
 interface SidebarProps {
@@ -92,6 +100,32 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             );
           })}
         </ul>
+
+        {/* Kiosk tools */}
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <p className="px-4 mb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
+            Attendance Kiosk
+          </p>
+          <ul className="space-y-1">
+            {kioskItems.map(({ href, label, icon: Icon }) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  {label}
+                  <svg className="w-3 h-3 ml-auto opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </nav>
 
       {/* User section */}
