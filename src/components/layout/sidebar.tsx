@@ -16,6 +16,7 @@ import {
   X,
   Receipt,
   ShoppingCart,
+  Clock,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/pos', label: 'POS Terminal', icon: ShoppingCart },
   { href: '/dashboard/sales', label: 'Sales', icon: Receipt },
+  { href: '/dashboard/attendance', label: 'Attendance', icon: Clock },
   { href: '/dashboard/products', label: 'Products', icon: Package },
   { href: '/dashboard/categories', label: 'Categories', icon: Tag },
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
