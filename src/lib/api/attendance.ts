@@ -1,4 +1,11 @@
 import apiClient from './axios';
+import axios from 'axios';
+
+// Bare axios instance for kiosk (no auth header — token is in the request body)
+const kioskClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+});
 
 export type AttendanceEventType = 'CLOCK_IN' | 'LUNCH_OUT' | 'LUNCH_IN' | 'CLOCK_OUT';
 export type AttendanceMethod = 'MANUAL' | 'QR';
@@ -56,6 +63,19 @@ export interface TimesheetRow {
   methods: AttendanceMethod[];
   timezone: string;
   correctionCount: number;
+}
+
+export interface EmployeeQrToken {
+  qrToken: string;
+  expiresAt: string;
+  employee: { id: string; firstName: string; lastName: string };
+}
+
+export interface KioskScanResult {
+  actionPerformed: AttendanceEventType;
+  employee: { id: string; firstName: string; lastName: string };
+  timestamp: string;
+  record: AttendanceRecord;
 }
 
 export interface QrTerminal {
@@ -128,4 +148,14 @@ export const attendanceApi = {
 
   deactivateTerminal: (id: string) =>
     apiClient.patch<QrTerminal>(`/admin/attendance/qr-terminals/${id}/deactivate`).then((r) => r.data),
+
+  // My QR — requires auth
+  getMyQr: () =>
+    apiClient.get<EmployeeQrToken>('/attendance/me/qr').then((r) => r.data),
+
+  // Kiosk scan — no auth (QR token is the credential)
+  kioskScan: (qrToken: string, kioskId?: string, locationId?: string) =>
+    kioskClient
+      .post<KioskScanResult>('/attendance/kiosk/scan', { qrToken, kioskId, locationId })
+      .then((r) => r.data),
 };
